@@ -14,6 +14,8 @@ productRouter.get('/readAllProducts', productController.readAllProducts);
 
 productRouter.post('/readProductsByCategoryId', productController.readProductsByCategoryId);
 
+productRouter.post('/readProductsByCategoryUuid', productController.readProductsByCategoryUuid);
+
 productRouter.put('/updateProduct', productController.updateProduct);
 
 productRouter.put('/deleteProduct', productController.deleteProduct);

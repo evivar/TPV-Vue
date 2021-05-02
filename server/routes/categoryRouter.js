@@ -8,7 +8,11 @@ const categoryRouter = express.Router();
 
 categoryRouter.post('/createCategory', categoryController.createCategory);
 
+categoryRouter.post('/createCategoryBulk', categoryController.createCategoryBulk);
+
 categoryRouter.post('/readCategoryByUuid', categoryController.readCategoryByUuid);
+
+categoryRouter.post('/readRootCategories', categoryController.readRootCategories);
 
 categoryRouter.get('/readAllCategories', categoryController.readAllCategories);
 

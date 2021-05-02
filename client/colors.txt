@@ -1,0 +1,10 @@
+background:
+
+dark background:
+
+font color:
+
+button color:
+
+highlight button color:
+

@@ -58,6 +58,20 @@ module.exports = {
         }
     },
 
+    readProductsByCategoryUuid: async function (req, res) { 
+        await sequelize.sync();
+        const uuid = req.body.uuid;
+        try {
+            const products = await Product.findAll({
+                where: {uuid}
+            });
+            return res.status(200).json({result: products.map((product) => mapper(product))});
+        } catch (err) {
+            console.log('err :>> ', err);
+            return res.status(500).json({error: err});
+        }
+    },
+
     updateProduct: async function (req, res) {
         await sequelize.sync();
         const {uuid, name, image, price} = req.body;

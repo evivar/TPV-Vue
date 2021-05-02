@@ -1,6 +1,7 @@
 "use strict";
 
 const { sequelize, Category } = require('../models');
+const {Op} = require('sequelize');
 const mapper = require('../utils/mapper').mapCategoryToDto;
 
 module.exports = {
@@ -17,6 +18,21 @@ module.exports = {
         }
     },
 
+    createCategoryBulk: async function (req, res) {
+        await sequelize.sync();
+        try {
+            const categoriesRecords = [];
+            for(var i = 0; i <= 28; i++){
+                categoriesRecords.push({name: 'Category ' + i})
+            }
+            const categories = await Category.bulkCreate(categoriesRecords);
+            return res.status(200).json({ result: categories.map((categpru) => mapper(categpru)) });
+        } catch (err) {
+            console.log('err :>> ', err);
+            return res.status(500).json({ error: err });
+        }
+    },
+
     readCategoryByUuid: async function(req, res){
         await sequelize.sync();
         const uuid = req.body.uuid;
@@ -29,6 +45,23 @@ module.exports = {
         } catch (err) {
             console.log('err :>> ', err);
             return res.status(500).json({error: err})
+        }
+    },
+
+    readRootCategories: async function(req, res){
+        await sequelize.sync();
+        try {
+            const categories = await Category.findAll({
+                where: {
+                    CategoryId: {
+                        [Op.is]: null
+                    }
+                }
+            });
+            return res.status(200).json({result: categories.map((category) => mapper(category))});
+        } catch (err) {
+            console.log('err :>> ', err);
+            return res.status(500).json({error: err});
         }
     },
 
@@ -56,7 +89,11 @@ module.exports = {
             const parentCategory = await Category.findOne({
                 where: {id: category.CategoryId}
             });
-            return res.status(200).json({result: mapper(parentCategory)});
+            const parentCategories = await Category.findAll({
+                where: {CategoryId: parentCategory.CategoryId}
+            });
+            console.log('parentCategories :>> ', parentCategories);
+            return res.status(200).json({result: parentCategories.map((category) => mapper(category))});
         } catch (err) {
             console.log('err :>> ', err);
             return res.status(500).json({error: err});
