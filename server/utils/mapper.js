@@ -48,7 +48,7 @@ function mapInvoiceToDto(invoice){
         table: invoice.tableId,
         status: invoice.status,
         date: moment(invoice.updatedAt).format('DD/MM/YYYY - HH:mm'),
-        lines: invoice.Lines.map((line) => mapLineToDto(line))
+        lines: (invoice.Lines) ? invoice.Lines.map((line) => mapLineToDto(line)) : []
     }
 };
 

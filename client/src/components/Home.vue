@@ -10,11 +10,13 @@
           hide-default-footer
           height="40vh"
           class="elevation-1"
+          @click:row="openEditInvoiceDialog"
         >
           <template v-slot:[`item.price`]="{ item }">
             {{ item.price }} €
           </template>
         </v-data-table>
+        <edit-invoice-line></edit-invoice-line>
         <div style="height: 13vh">
           <h3
             style="display: flex; justify-content: space-between; padding: 10px"
@@ -74,6 +76,7 @@ import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
 import AddEditTable from "./AddEditTable.vue";
 
 import Categories from "./Categories";
+import EditInvoiceLine from './EditInvoiceLine.vue';
 import Products from "./Products.vue";
 
 export default {
@@ -82,6 +85,7 @@ export default {
     AddEditTable,
     Categories,
     Products,
+    EditInvoiceLine,
   },
   created() {},
   computed: {
@@ -94,6 +98,7 @@ export default {
   },
   data: () => ({
     invoiceHeaders: [
+      { text: "Qty", sortable: false, align: "start", value: "quantity", divider: true},
       {
         text: "Name",
         align: "start",
@@ -107,6 +112,7 @@ export default {
     openTableDialog() {
       this.$store.commit("openTableDialog");
     },
+    ...mapMutations(["openEditInvoiceDialog"])
   },
 };
 </script>

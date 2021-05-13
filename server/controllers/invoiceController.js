@@ -36,11 +36,12 @@ module.exports = {
         await sequelize.sync();
         const tableId = req.body.tableId;
         try {
-            const invoice = await Invoice.findOne({
+            const [invoice, created] = await Invoice.findOrCreate({
                 where: { tableId: tableId },
                 include: Line
             });
-            return res.status(200).json({ result: mapper(invoice) });
+            console.log('invoice :>> ', invoice);
+            return res.status(200).json({ result: (created) ? mapper(invoice) : mapper(invoice)});
         } catch (err) {
             console.log('err :>> ', err);
             return res.status(500).json({ error: err });

@@ -78,9 +78,9 @@ module.exports = {
 
     updateLine: async function(req, res){
         await sequelize.sync();
-        const {uuid, quantity, discount} = req.body;
+        const {uuid, quantity, discount, cost} = req.body;
         try {
-            await Line.update({quantity, discount},{
+            await Line.update({quantity, discount, cost},{
                 where: {uuid}
             });
             return res.status(200).json({result: 'Line updated!'});

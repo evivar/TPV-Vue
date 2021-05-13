@@ -6,6 +6,10 @@ const state = {
 
     invoice: {},
 
+    editInvoiceDialog: false,
+
+    selectedLine: {}
+
 };
 
 const getters = {
@@ -21,6 +25,8 @@ const getters = {
             return 0;
         }
     },
+    editInvoiceDialog: (state) => { return state.editInvoiceDialog; },
+    selectedLine: (state) => { return state.selectedLine; },
 }
 
 
@@ -73,6 +79,46 @@ const actions = {
         })
     },
 
+    async editLine({ commit, state }) {
+        await Vue.axios.put('/line/updateLine', { uuid: state.selectedLine.uuid, quantity: state.selectedLine.quantity, discount: state.selectedLine.discount, cost: state.selectedLine.cost }).then(async (resp) => {
+            let data = resp.data;
+            if (data) {
+                await Vue.axios.post('/line/readAllInvoiceLines', { invoiceId: state.selectedLine.invoiceId }).then((resp) => {
+                    let data = resp.data;
+                    if (data) {
+                        commit("updateLines", data);
+                    }
+                    else {
+                        commit("updateLinesError");
+                    }
+                })
+            }
+            else {
+                commit("addLineError");
+            }
+        })
+    },
+
+    async deleteLine({ commit, state }) {
+        await Vue.axios.put('/line/deleteLine', { uuid: state.selectedLine.uuid, }).then(async (resp) => {
+            let data = resp.data;
+            if (data) {
+                await Vue.axios.post('/line/readAllInvoiceLines', { invoiceId: state.selectedLine.invoiceId }).then((resp) => {
+                    let data = resp.data;
+                    if (data) {
+                        commit("updateLines", data);
+                    }
+                    else {
+                        commit("updateLinesError");
+                    }
+                })
+            }
+            else {
+                commit("addLineError");
+            }
+        })
+    },
+
 };
 
 const mutations = {
@@ -90,6 +136,18 @@ const mutations = {
 
     updateLines(state, data) {
         state.invoice.lines = data.result;
+    },
+
+    openEditInvoiceDialog(state, value) {
+        console.log("Abriendo el dialogo de la linea")
+        console.log('value :>> ', value);
+        state.editInvoiceDialog = true;
+        state.selectedLine = value;
+    },
+
+    closeEditInvoiceDialog(state) {
+        state.editInvoiceDialog = false;
+        state.selectedLine = {};
     },
 };
 
